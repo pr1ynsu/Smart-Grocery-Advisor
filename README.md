@@ -125,7 +125,7 @@ npm start    # for CRA
 
 ## 🧠 Author
 
-👨‍💻 Developed by [Your Name](https://github.com/your-username)
+👨‍💻 Developed by [pr1ynsu](https://github.com/pr1ynsu)
 
 If you found this helpful, give it a ⭐ and share your feedback!
 
@@ -135,13 +135,3 @@ If you found this helpful, give it a ⭐ and share your feedback!
 
 This project is licensed under the [MIT License](LICENSE).
 
-```
-
----
-
-### ✅ Next Steps:
-- Add a `preview.png` screenshot in your repo for the image preview.
-- Customize author, links, and to-do list as needed.
-
-Let me know if you'd like help deploying it, setting up authentication, or designing a logo!
-```
