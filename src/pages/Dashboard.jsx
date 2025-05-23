@@ -5,7 +5,7 @@ function Dashboard({ userBMI }) {
   // State
   const [cart, setCart] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterPacked, setFilterPacked] = useState("both"); // packed | unpacked | both
+  const [filterPacked, setFilterPacked] = useState("both"); 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Combine all items
@@ -231,12 +231,12 @@ const styles = {
 
   image: {
   width: "100%",
-  height: "auto", // let height adjust based on image ratio
-  objectFit: "contain", // prevent cropping
-  maxHeight: "160px", // set a max height to limit card expansion
+  height: "auto", 
+  objectFit: "contain", 
+  maxHeight: "160px", 
   borderRadius: "8px",
   marginBottom: "10px",
-  backgroundColor: "#ffffff", // optional: adds contrast for images with transparency
+  backgroundColor: "#ffffff", 
 },
 
   addButton: {
