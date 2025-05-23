@@ -59,85 +59,125 @@ function Dashboard({ userBMI }) {
   };
 
   return (
-    <div style={styles.container}>
-      {/* Navbar */}
-      <nav style={styles.navbar}>
-        <div style={styles.logo}>Smart Grocery</div>
+    <>
+      {/* Responsive CSS */}
+      <style>{`
+        @media (max-width: 600px) {
+          nav.navbar {
+            flex-wrap: wrap !important;
+            padding: 8px 10px !important;
+          }
+          nav.navbar > div.logo {
+            font-size: 1.1rem !important;
+            flex-basis: 100% !important;
+            margin-bottom: 8px !important;
+            text-align: center !important;
+          }
+          nav.navbar > div.searchFilter {
+            flex-basis: 100% !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            margin-top: 8px !important;
+          }
+          nav.navbar input[type="text"] {
+            font-size: 0.9rem !important;
+          }
+          nav.navbar select {
+            font-size: 0.9rem !important;
+          }
+          nav.navbar > div.cartIconContainer {
+            font-size: 1.3rem !important;
+            margin-top: 8px !important;
+          }
+        }
+      `}</style>
 
-        <div style={styles.searchFilter}>
-          <input
-            type="text"
-            placeholder="Search items or category..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            style={styles.searchInput}
-          />
-          <select
-            value={filterPacked}
-            onChange={e => setFilterPacked(e.target.value)}
-            style={styles.filterSelect}
-            aria-label="Filter items"
+      <div style={styles.container}>
+        {/* Navbar */}
+        <nav style={styles.navbar} className="navbar">
+          <div style={styles.logo} className="logo">Smart Grocery</div>
+
+          <div style={styles.searchFilter} className="searchFilter">
+            <input
+              type="text"
+              placeholder="Search items or category..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              style={styles.searchInput}
+            />
+            <select
+              value={filterPacked}
+              onChange={e => setFilterPacked(e.target.value)}
+              style={styles.filterSelect}
+              aria-label="Filter items"
+            >
+              <option value="both">All</option>
+              <option value="packed">Packed</option>
+              <option value="unpacked">Unpacked</option>
+            </select>
+          </div>
+
+          <div
+            style={styles.cartIconContainer}
+            className="cartIconContainer"
+            onClick={() => setDrawerOpen(true)}
+            role="button"
+            aria-label="Open Cart"
           >
-            <option value="both">All</option>
-            <option value="packed">Packed</option>
-            <option value="unpacked">Unpacked</option>
-          </select>
+            🛒
+            {cart.length > 0 && <span style={styles.cartBadge}>{cart.length}</span>}
+          </div>
+        </nav>
+
+        {/* Items Grid */}
+        <div style={styles.grid}>
+          {filteredItems.length === 0 ? (
+            <p>No items found.</p>
+          ) : (
+            filteredItems.map(item => (
+              <div key={item.id} style={styles.card}>
+                <img src={item.image} alt={item.name} style={styles.image} />
+                <h3>{item.name}</h3>
+                <p>Calories: {item.calories}</p>
+                <p>Protein: {item.protein}g | Carbs: {item.carbs}g | Fats: {item.fats}g</p>
+                <p><strong>{getBMISuggestion(item)}</strong></p>
+                <button style={styles.addButton} onClick={() => addToCart(item)}>Add to Cart</button>
+              </div>
+            ))
+          )}
         </div>
 
-        <div style={styles.cartIconContainer} onClick={() => setDrawerOpen(true)} role="button" aria-label="Open Cart">
-          🛒
-          {cart.length > 0 && <span style={styles.cartBadge}>{cart.length}</span>}
-        </div>
-      </nav>
-
-      {/* Items Grid */}
-      <div style={styles.grid}>
-        {filteredItems.length === 0 ? (
-          <p>No items found.</p>
-        ) : (
-          filteredItems.map(item => (
-            <div key={item.id} style={styles.card}>
-              <img src={item.image} alt={item.name} style={styles.image} />
-              <h3>{item.name}</h3>
-              <p>Calories: {item.calories}</p>
-              <p>Protein: {item.protein}g | Carbs: {item.carbs}g | Fats: {item.fats}g</p>
-              <p><strong>{getBMISuggestion(item)}</strong></p>
-              <button style={styles.addButton} onClick={() => addToCart(item)}>Add to Cart</button>
-            </div>
-          ))
+        {/* Cart Drawer */}
+        {drawerOpen && (
+          <>
+            <div style={styles.drawerOverlay} onClick={() => setDrawerOpen(false)}></div>
+            <aside style={styles.drawer}>
+              <button style={styles.closeButton} onClick={() => setDrawerOpen(false)}>✖</button>
+              <h2>Your Cart ({cart.length})</h2>
+              {cart.length === 0 && <p>Your cart is empty.</p>}
+              <div style={styles.cartItems}>
+                {cart.map((item, i) => (
+                  <div key={i} style={styles.cartItem}>
+                    <img src={item.image} alt={item.name} style={styles.cartItemImage} />
+                    <div>
+                      <h4>{item.name}</h4>
+                      <p>{item.calories} cal | {item.protein}g P | {item.carbs}g C | {item.fats}g F</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={styles.cartTotals}>
+                <p><strong>Total Calories:</strong> {totalNutrition.calories}</p>
+                <p><strong>Total Protein:</strong> {totalNutrition.protein}g</p>
+                <p><strong>Total Carbs:</strong> {totalNutrition.carbs}g</p>
+                <p><strong>Total Fats:</strong> {totalNutrition.fats}g</p>
+                <p style={{ marginTop: '10px', color: 'orange' }}>{getNutritionWarning()}</p>
+              </div>
+            </aside>
+          </>
         )}
       </div>
-
-      {/* Cart Drawer */}
-      {drawerOpen && (
-        <>
-          <div style={styles.drawerOverlay} onClick={() => setDrawerOpen(false)}></div>
-          <aside style={styles.drawer}>
-            <button style={styles.closeButton} onClick={() => setDrawerOpen(false)}>✖</button>
-            <h2>Your Cart ({cart.length})</h2>
-            {cart.length === 0 && <p>Your cart is empty.</p>}
-            <div style={styles.cartItems}>
-              {cart.map((item, i) => (
-                <div key={i} style={styles.cartItem}>
-                  <img src={item.image} alt={item.name} style={styles.cartItemImage} />
-                  <div>
-                    <h4>{item.name}</h4>
-                    <p>{item.calories} cal | {item.protein}g P | {item.carbs}g C | {item.fats}g F</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div style={styles.cartTotals}>
-              <p><strong>Total Calories:</strong> {totalNutrition.calories}</p>
-              <p><strong>Total Protein:</strong> {totalNutrition.protein}g</p>
-              <p><strong>Total Carbs:</strong> {totalNutrition.carbs}g</p>
-              <p><strong>Total Fats:</strong> {totalNutrition.fats}g</p>
-              <p style={{ marginTop: '10px', color: 'orange' }}>{getNutritionWarning()}</p>
-            </div>
-          </aside>
-        </>
-      )}
-    </div>
+    </>
   );
 }
 
@@ -162,6 +202,7 @@ const styles = {
     color: "#fff8dc",
     padding: "10px 20px",
     borderRadius: "10px",
+    flexWrap: "nowrap", // default; overridden by media query on small screens
   },
 
   logo: {
@@ -230,14 +271,14 @@ const styles = {
   },
 
   image: {
-  width: "100%",
-  height: "auto", 
-  objectFit: "contain", 
-  maxHeight: "160px", 
-  borderRadius: "8px",
-  marginBottom: "10px",
-  backgroundColor: "#ffffff", 
-},
+    width: "100%",
+    height: "auto",
+    objectFit: "contain",
+    maxHeight: "160px",
+    borderRadius: "8px",
+    marginBottom: "10px",
+    backgroundColor: "#ffffff",
+  },
 
   addButton: {
     marginTop: "10px",
